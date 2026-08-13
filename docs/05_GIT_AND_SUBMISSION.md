@@ -90,20 +90,30 @@ joining it back. If the graph is a straight line, the criterion is not met — r
 
 ## Pushing to GitHub
 
+**This must go to your personal GitHub account (github.com/ArnavArn), never to a company
+account or org.** This machine's local git identity for this repo is already set to
+`ArnavArn <gargarnav2982@gmail.com>` (local override, does not touch your global/company git
+config). Claude Code will not run `git push` or `gh repo create` on your behalf — you do this
+step yourself, by design.
+
 `gh` CLI is not installed on this machine, so create the repo through the web UI:
 
-1. Go to **github.com/new**.
+1. Go to **github.com/new** while logged into **github.com/ArnavArn** (your personal account —
+   double check the account switcher in the top-right before creating).
 2. Repository name: `flipkart-order-intelligence-support-assistant`
 3. Visibility: **Public** ← required; a private repo cannot be graded.
 4. **Do not** initialise with a README, .gitignore, or licence — the local repo already has them
    and an initialised remote forces an awkward merge.
-5. Create, then run:
+5. Create, then run these yourself from the repo root:
 
 ```bash
-git remote add origin https://github.com/<your-username>/flipkart-order-intelligence-support-assistant.git
+git remote add origin https://github.com/ArnavArn/flipkart-order-intelligence-support-assistant.git
 git push -u origin main
 git push origin feature/part3-support-agent      # push the branch too, so the history is visible
 ```
+
+If `git push` prompts for credentials, authenticate as your **personal** GitHub account — not
+whatever account/token your work VS Code or company Claude Code setup may have cached.
 
 ### Post-push verification (do all five)
 
