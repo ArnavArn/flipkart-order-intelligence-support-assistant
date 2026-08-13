@@ -1,0 +1,37 @@
+{
+  "model": "RandomForestClassifier (GridSearchCV best) inside sklearn Pipeline",
+  "best_params": {
+    "model__max_depth": 6,
+    "model__n_estimators": 200
+  },
+  "cv_roc_auc": 0.619257,
+  "test_roc_auc": 0.620308,
+  "t_star_rf": 0.5,
+  "t_star_logreg": 0.44,
+  "risk_buckets": {
+    "low": "p < t_star_rf",
+    "medium": "t_star_rf <= p < t_star_rf + 0.15",
+    "high": "p >= t_star_rf + 0.15"
+  },
+  "bucket_cut_points": [
+    0.5,
+    0.65
+  ],
+  "numeric_features": [
+    "price_inr",
+    "discount_pct",
+    "customer_tenure_days",
+    "num_previous_orders",
+    "num_previous_returns",
+    "delivery_distance_km",
+    "delivery_days",
+    "is_weekend_order",
+    "rating_given"
+  ],
+  "categorical_features": [
+    "product_category",
+    "payment_method"
+  ],
+  "sklearn_version": "1.9.0",
+  "generated_by": "part1_return_risk/train.py"
+}
