@@ -1,0 +1,32 @@
+[
+  {
+    "qid": "Q1",
+    "query": "How many days do I have to return a kurta I bought?",
+    "relevant_doc_ids": ["POL-01"]
+  },
+  {
+    "qid": "Q2",
+    "query": "When will I get my money back for a cash on delivery order?",
+    "relevant_doc_ids": ["POL-06"]
+  },
+  {
+    "qid": "Q3",
+    "query": "Can I return a laptop if I simply changed my mind?",
+    "relevant_doc_ids": ["POL-03"]
+  },
+  {
+    "qid": "Q4",
+    "query": "How long does delivery take to a remote pincode?",
+    "relevant_doc_ids": ["POL-10", "POL-09"]
+  },
+  {
+    "qid": "Q5",
+    "query": "Am I eligible for a reverse pickup and what if the courier misses me?",
+    "relevant_doc_ids": ["POL-11", "POL-12"]
+  },
+  {
+    "qid": "Q6",
+    "query": "Is a lipstick returnable?",
+    "relevant_doc_ids": ["POL-05"]
+  }
+]

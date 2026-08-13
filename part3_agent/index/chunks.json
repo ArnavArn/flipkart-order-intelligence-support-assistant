@@ -1,0 +1,415 @@
+[
+  {
+    "chunk_id": "POL-01#0",
+    "doc_id": "POL-01",
+    "doc_title": "Apparel Return Window",
+    "sentence_index": 0,
+    "text": "Apparel items on Flipkart are eligible for return within 7 days of delivery."
+  },
+  {
+    "chunk_id": "POL-01#1",
+    "doc_id": "POL-01",
+    "doc_title": "Apparel Return Window",
+    "sentence_index": 1,
+    "text": "The item must be unused with all original tags and packaging intact."
+  },
+  {
+    "chunk_id": "POL-01#2",
+    "doc_id": "POL-01",
+    "doc_title": "Apparel Return Window",
+    "sentence_index": 2,
+    "text": "Size and fit issues are accepted as valid return reasons for apparel."
+  },
+  {
+    "chunk_id": "POL-01#3",
+    "doc_id": "POL-01",
+    "doc_title": "Apparel Return Window",
+    "sentence_index": 3,
+    "text": "Returns requested after the 7-day window are automatically declined by the system."
+  },
+  {
+    "chunk_id": "POL-02#0",
+    "doc_id": "POL-02",
+    "doc_title": "Footwear Return Window",
+    "sentence_index": 0,
+    "text": "Footwear purchased on Flipkart can be returned within 7 days of delivery."
+  },
+  {
+    "chunk_id": "POL-02#1",
+    "doc_id": "POL-02",
+    "doc_title": "Footwear Return Window",
+    "sentence_index": 1,
+    "text": "Shoes must be unworn, show no signs of outdoor use, and be returned in the original box with all accessories."
+  },
+  {
+    "chunk_id": "POL-02#2",
+    "doc_id": "POL-02",
+    "doc_title": "Footwear Return Window",
+    "sentence_index": 2,
+    "text": "Fit and comfort complaints are accepted as valid reasons within this window."
+  },
+  {
+    "chunk_id": "POL-02#3",
+    "doc_id": "POL-02",
+    "doc_title": "Footwear Return Window",
+    "sentence_index": 3,
+    "text": "Footwear returned after 7 days, or showing wear on the sole, will not be accepted."
+  },
+  {
+    "chunk_id": "POL-03#0",
+    "doc_id": "POL-03",
+    "doc_title": "Electronics Return Window",
+    "sentence_index": 0,
+    "text": "Electronics carry a 10-day window from delivery, but it covers replacement for a genuine functional defect only, not a change of mind."
+  },
+  {
+    "chunk_id": "POL-03#1",
+    "doc_id": "POL-03",
+    "doc_title": "Electronics Return Window",
+    "sentence_index": 1,
+    "text": "A defective unit is swapped for an identical new unit after a quality check confirms the fault."
+  },
+  {
+    "chunk_id": "POL-03#2",
+    "doc_id": "POL-03",
+    "doc_title": "Electronics Return Window",
+    "sentence_index": 2,
+    "text": "Electronics that power on and function normally cannot be returned simply because the buyer no longer wants them."
+  },
+  {
+    "chunk_id": "POL-03#3",
+    "doc_id": "POL-03",
+    "doc_title": "Electronics Return Window",
+    "sentence_index": 3,
+    "text": "Sealed accessories and original packaging must be returned along with the unit."
+  },
+  {
+    "chunk_id": "POL-04#0",
+    "doc_id": "POL-04",
+    "doc_title": "Home & Kitchen Return Window",
+    "sentence_index": 0,
+    "text": "Home and kitchen products are eligible for return within 7 days of delivery."
+  },
+  {
+    "chunk_id": "POL-04#1",
+    "doc_id": "POL-04",
+    "doc_title": "Home & Kitchen Return Window",
+    "sentence_index": 1,
+    "text": "Items must be unused and returned with the original packaging, manuals, and any bundled accessories."
+  },
+  {
+    "chunk_id": "POL-04#2",
+    "doc_id": "POL-04",
+    "doc_title": "Home & Kitchen Return Window",
+    "sentence_index": 2,
+    "text": "Products that have been assembled, installed, or show signs of use are not eligible."
+  },
+  {
+    "chunk_id": "POL-04#3",
+    "doc_id": "POL-04",
+    "doc_title": "Home & Kitchen Return Window",
+    "sentence_index": 3,
+    "text": "Fragile items must be repacked exactly as received to qualify for pickup."
+  },
+  {
+    "chunk_id": "POL-05#0",
+    "doc_id": "POL-05",
+    "doc_title": "Beauty & Personal Care Returns",
+    "sentence_index": 0,
+    "text": "Beauty and personal care products, including lipstick and other cosmetics, are non-returnable on hygiene grounds once delivered."
+  },
+  {
+    "chunk_id": "POL-05#1",
+    "doc_id": "POL-05",
+    "doc_title": "Beauty & Personal Care Returns",
+    "sentence_index": 1,
+    "text": "The only exceptions are items that arrive damaged, expired, or different from what was ordered."
+  },
+  {
+    "chunk_id": "POL-05#2",
+    "doc_id": "POL-05",
+    "doc_title": "Beauty & Personal Care Returns",
+    "sentence_index": 2,
+    "text": "In those exception cases, a replacement or refund is issued after photo verification."
+  },
+  {
+    "chunk_id": "POL-05#3",
+    "doc_id": "POL-05",
+    "doc_title": "Beauty & Personal Care Returns",
+    "sentence_index": 3,
+    "text": "Opened cosmetic products cannot be returned for change-of-mind reasons."
+  },
+  {
+    "chunk_id": "POL-06#0",
+    "doc_id": "POL-06",
+    "doc_title": "COD Refund Timeline",
+    "sentence_index": 0,
+    "text": "For cash-on-delivery orders, refunds are issued as a bank transfer since there is no source payment instrument to credit back."
+  },
+  {
+    "chunk_id": "POL-06#1",
+    "doc_id": "POL-06",
+    "doc_title": "COD Refund Timeline",
+    "sentence_index": 1,
+    "text": "The refund is initiated only after reverse pickup is completed and the returned item passes a quality check."
+  },
+  {
+    "chunk_id": "POL-06#2",
+    "doc_id": "POL-06",
+    "doc_title": "COD Refund Timeline",
+    "sentence_index": 2,
+    "text": "Once initiated, the amount reaches the customer's bank account within 5-7 business days."
+  },
+  {
+    "chunk_id": "POL-06#3",
+    "doc_id": "POL-06",
+    "doc_title": "COD Refund Timeline",
+    "sentence_index": 3,
+    "text": "Customers must share valid bank account details to receive a COD refund."
+  },
+  {
+    "chunk_id": "POL-07#0",
+    "doc_id": "POL-07",
+    "doc_title": "Prepaid Card Refund Timeline",
+    "sentence_index": 0,
+    "text": "Orders paid by debit or credit card are refunded to the same source card once the returned item clears quality check after reverse pickup."
+  },
+  {
+    "chunk_id": "POL-07#1",
+    "doc_id": "POL-07",
+    "doc_title": "Prepaid Card Refund Timeline",
+    "sentence_index": 1,
+    "text": "The bank typically credits the amount within 3-5 business days of the refund being initiated."
+  },
+  {
+    "chunk_id": "POL-07#2",
+    "doc_id": "POL-07",
+    "doc_title": "Prepaid Card Refund Timeline",
+    "sentence_index": 2,
+    "text": "Actual crediting time can vary slightly by issuing bank."
+  },
+  {
+    "chunk_id": "POL-07#3",
+    "doc_id": "POL-07",
+    "doc_title": "Prepaid Card Refund Timeline",
+    "sentence_index": 3,
+    "text": "No new bank details are required since the refund goes back to the original card."
+  },
+  {
+    "chunk_id": "POL-08#0",
+    "doc_id": "POL-08",
+    "doc_title": "UPI and Wallet Refund Timeline",
+    "sentence_index": 0,
+    "text": "Orders paid via UPI are refunded to the originating UPI ID within 24-48 hours of the refund being initiated after quality check."
+  },
+  {
+    "chunk_id": "POL-08#1",
+    "doc_id": "POL-08",
+    "doc_title": "UPI and Wallet Refund Timeline",
+    "sentence_index": 1,
+    "text": "Wallet payments are refunded almost instantly, usually crediting the wallet balance within minutes."
+  },
+  {
+    "chunk_id": "POL-08#2",
+    "doc_id": "POL-08",
+    "doc_title": "UPI and Wallet Refund Timeline",
+    "sentence_index": 2,
+    "text": "Both methods are faster than card or COD refunds because they settle through real-time payment rails."
+  },
+  {
+    "chunk_id": "POL-08#3",
+    "doc_id": "POL-08",
+    "doc_title": "UPI and Wallet Refund Timeline",
+    "sentence_index": 3,
+    "text": "Customers can track either refund from the order details page."
+  },
+  {
+    "chunk_id": "POL-09#0",
+    "doc_id": "POL-09",
+    "doc_title": "Delivery SLA \u2014 Metro Cities",
+    "sentence_index": 0,
+    "text": "Orders shipped to metro cities such as Delhi, Mumbai, Bengaluru, and Chennai are typically delivered within 2-4 days of dispatch."
+  },
+  {
+    "chunk_id": "POL-09#1",
+    "doc_id": "POL-09",
+    "doc_title": "Delivery SLA \u2014 Metro Cities",
+    "sentence_index": 1,
+    "text": "Standard shipping is used for most metro pincodes with same-day or next-day dispatch from the nearest warehouse."
+  },
+  {
+    "chunk_id": "POL-09#2",
+    "doc_id": "POL-09",
+    "doc_title": "Delivery SLA \u2014 Metro Cities",
+    "sentence_index": 2,
+    "text": "Express-eligible items in metro areas may arrive even faster."
+  },
+  {
+    "chunk_id": "POL-09#3",
+    "doc_id": "POL-09",
+    "doc_title": "Delivery SLA \u2014 Metro Cities",
+    "sentence_index": 3,
+    "text": "Delays beyond 4 days in a metro pincode should be reported to support."
+  },
+  {
+    "chunk_id": "POL-10#0",
+    "doc_id": "POL-10",
+    "doc_title": "Delivery SLA \u2014 Non-Metro and Remote Pincodes",
+    "sentence_index": 0,
+    "text": "Non-metro towns generally see delivery within 4-8 days of dispatch, depending on distance from the nearest hub."
+  },
+  {
+    "chunk_id": "POL-10#1",
+    "doc_id": "POL-10",
+    "doc_title": "Delivery SLA \u2014 Non-Metro and Remote Pincodes",
+    "sentence_index": 1,
+    "text": "Remote or difficult-to-access pincodes can take up to 10 days because couriers route through additional local transfer points."
+  },
+  {
+    "chunk_id": "POL-10#2",
+    "doc_id": "POL-10",
+    "doc_title": "Delivery SLA \u2014 Non-Metro and Remote Pincodes",
+    "sentence_index": 2,
+    "text": "Weather and regional logistics disruptions can add extra days beyond these estimates."
+  },
+  {
+    "chunk_id": "POL-10#3",
+    "doc_id": "POL-10",
+    "doc_title": "Delivery SLA \u2014 Non-Metro and Remote Pincodes",
+    "sentence_index": 3,
+    "text": "Customers in remote pincodes are shown the estimated delivery date at checkout before placing the order."
+  },
+  {
+    "chunk_id": "POL-11#0",
+    "doc_id": "POL-11",
+    "doc_title": "Reverse Pickup Eligibility",
+    "sentence_index": 0,
+    "text": "Reverse pickup is offered when the delivery pincode is serviceable by a courier partner, the return is requested within the applicable return window, and the item is in its original, unused condition."
+  },
+  {
+    "chunk_id": "POL-11#1",
+    "doc_id": "POL-11",
+    "doc_title": "Reverse Pickup Eligibility",
+    "sentence_index": 1,
+    "text": "If reverse pickup is not serviceable at a pincode, the customer is asked to self-ship the item instead."
+  },
+  {
+    "chunk_id": "POL-11#2",
+    "doc_id": "POL-11",
+    "doc_title": "Reverse Pickup Eligibility",
+    "sentence_index": 2,
+    "text": "Eligibility is checked automatically the moment a return is raised against an order."
+  },
+  {
+    "chunk_id": "POL-12#0",
+    "doc_id": "POL-12",
+    "doc_title": "Reverse Pickup Scheduling and Failed Attempts",
+    "sentence_index": 0,
+    "text": "Once a return is approved, the courier partner schedules reverse pickup and makes up to 3 attempts to collect the item from the customer's address."
+  },
+  {
+    "chunk_id": "POL-12#1",
+    "doc_id": "POL-12",
+    "doc_title": "Reverse Pickup Scheduling and Failed Attempts",
+    "sentence_index": 1,
+    "text": "If all 3 attempts fail, usually because the customer was unavailable, the system automatically switches to a self-ship fallback with a prepaid shipping label."
+  },
+  {
+    "chunk_id": "POL-12#2",
+    "doc_id": "POL-12",
+    "doc_title": "Reverse Pickup Scheduling and Failed Attempts",
+    "sentence_index": 2,
+    "text": "Customers are notified by SMS and app notification before each pickup attempt."
+  },
+  {
+    "chunk_id": "POL-12#3",
+    "doc_id": "POL-12",
+    "doc_title": "Reverse Pickup Scheduling and Failed Attempts",
+    "sentence_index": 3,
+    "text": "Failing to hand over the item within the retry window can cause the return to be cancelled."
+  },
+  {
+    "chunk_id": "POL-13#0",
+    "doc_id": "POL-13",
+    "doc_title": "Exchange and Size Replacement",
+    "sentence_index": 0,
+    "text": "Exchanges are available only for apparel and footwear, and only for a different size or color of the same product."
+  },
+  {
+    "chunk_id": "POL-13#1",
+    "doc_id": "POL-13",
+    "doc_title": "Exchange and Size Replacement",
+    "sentence_index": 1,
+    "text": "Only one exchange is permitted per order line item, after which any further change must go through the standard return process."
+  },
+  {
+    "chunk_id": "POL-13#2",
+    "doc_id": "POL-13",
+    "doc_title": "Exchange and Size Replacement",
+    "sentence_index": 2,
+    "text": "The replacement item ships only after the original item is picked up or handed over for reverse pickup."
+  },
+  {
+    "chunk_id": "POL-13#3",
+    "doc_id": "POL-13",
+    "doc_title": "Exchange and Size Replacement",
+    "sentence_index": 3,
+    "text": "Exchange requests follow the same 7-day window as the category's return policy."
+  },
+  {
+    "chunk_id": "POL-14#0",
+    "doc_id": "POL-14",
+    "doc_title": "Damaged or Defective on Arrival",
+    "sentence_index": 0,
+    "text": "Items that arrive physically damaged or with a manufacturing defect must be reported within 48 hours of delivery."
+  },
+  {
+    "chunk_id": "POL-14#1",
+    "doc_id": "POL-14",
+    "doc_title": "Damaged or Defective on Arrival",
+    "sentence_index": 1,
+    "text": "Customers are asked to provide unboxing photos or a video showing the damage as evidence for the claim."
+  },
+  {
+    "chunk_id": "POL-14#2",
+    "doc_id": "POL-14",
+    "doc_title": "Damaged or Defective on Arrival",
+    "sentence_index": 2,
+    "text": "Once verified, a free reverse pickup is arranged and a replacement or full refund is issued without deducting any fee."
+  },
+  {
+    "chunk_id": "POL-14#3",
+    "doc_id": "POL-14",
+    "doc_title": "Damaged or Defective on Arrival",
+    "sentence_index": 3,
+    "text": "Claims raised after the 48-hour window are handled under the standard category return policy instead."
+  },
+  {
+    "chunk_id": "POL-15#0",
+    "doc_id": "POL-15",
+    "doc_title": "Refund Status Tracking and Escalation",
+    "sentence_index": 0,
+    "text": "Every refund is assigned a reference ID that customers can use to track its status from the order details page."
+  },
+  {
+    "chunk_id": "POL-15#1",
+    "doc_id": "POL-15",
+    "doc_title": "Refund Status Tracking and Escalation",
+    "sentence_index": 1,
+    "text": "The status moves through initiated, processed, and credited stages, each timestamped for visibility."
+  },
+  {
+    "chunk_id": "POL-15#2",
+    "doc_id": "POL-15",
+    "doc_title": "Refund Status Tracking and Escalation",
+    "sentence_index": 2,
+    "text": "If a refund is not credited within the SLA stated for its payment method, the customer can escalate the reference ID to a human support agent."
+  },
+  {
+    "chunk_id": "POL-15#3",
+    "doc_id": "POL-15",
+    "doc_title": "Refund Status Tracking and Escalation",
+    "sentence_index": 3,
+    "text": "Escalated cases are reviewed within 2 business days of being raised."
+  }
+]
