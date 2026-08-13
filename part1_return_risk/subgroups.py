@@ -1,5 +1,5 @@
-"""Task 8 — subgroup recall/precision/F1 by product_category and payment_method, evaluated on
-the test split at the deployed operating point (t*_rf).
+"""Subgroup recall/precision/F1 by product_category and payment_method, at the deployed
+operating point (t*_rf).
 """
 import numpy as np
 import pandas as pd

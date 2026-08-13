@@ -1,19 +1,7 @@
-"""ENTRY POINT — python -m part1_return_risk.train
+"""Entry point: python -m part1_return_risk.train
 
-Runs Tasks 2-9 end to end:
-  - Task 2: data verification + MAR evidence      -> reports/01_data_checks.md
-  - Task 4: DummyClassifier baseline               -> reports/02_baseline_and_logreg.md (part 1)
-  - Task 5: LogisticRegression @0.5 + threshold sweep
-                                                     -> reports/02_baseline_and_logreg.md (part 2)
-                                                        reports/03_threshold_sweep_logreg.md/.csv/.png
-  - Task 6: RandomForest + GridSearchCV             -> reports/04_random_forest_gridsearch.md
-  - Task 7: impurity vs permutation importance      -> reports/05_feature_importance.md
-  - Task 8: subgroup analysis at t*_rf              -> reports/06_subgroup_analysis.md
-  - Task 9: save model + meta + reload verification -> reports/07_final_artifact.md
-
-Every number written into every report is computed by the code in this file (or the modules it
-calls) — nothing is hand-typed. Re-running this script reproduces identical numbers because
-SEED=42 is used everywhere randomness occurs.
+Runs the full pipeline end to end and writes reports/*.md. Every number is computed
+here, nothing hand-typed; SEED=42 everywhere makes reruns reproduce identical output.
 """
 import json
 
@@ -61,10 +49,6 @@ def gate_line(label: str, passed: bool, detail: str) -> str:
     mark = "PASS" if passed else "FAIL"
     return f"- **[{mark}] {label}** — {detail}"
 
-
-# ---------------------------------------------------------------------------
-# Task 2 — data checks + MAR evidence
-# ---------------------------------------------------------------------------
 
 def task2_data_checks(df: pd.DataFrame) -> dict:
     shape = basic_shape(df)
@@ -150,10 +134,6 @@ def task2_data_checks(df: pd.DataFrame) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
-# Task 4/5 — dummy baseline + logreg + threshold sweep
-# ---------------------------------------------------------------------------
-
 def evaluate_at_threshold(y_true, proba, threshold=0.5) -> dict:
     preds = (proba >= threshold).astype(int)
     return {
@@ -168,7 +148,6 @@ def evaluate_at_threshold(y_true, proba, threshold=0.5) -> dict:
 def task4_5_baseline_and_logreg(X_train, X_test, y_train, y_test) -> dict:
     lines = ["# 02 — Baseline (Dummy) and Logistic Regression\n"]
 
-    # --- Task 4: Dummy baseline ---
     dummy = fit_dummy(X_train, y_train)
     dummy_preds = dummy.predict(X_test)
     dummy_acc = accuracy_score(y_test, dummy_preds)
@@ -194,7 +173,6 @@ def task4_5_baseline_and_logreg(X_train, X_test, y_train, y_test) -> dict:
         f"is catching returns *before* they happen, not maximizing overall accuracy.\n"
     )
 
-    # --- Task 5: Logistic Regression @ 0.5 ---
     logreg = fit_logreg(X_train, y_train)
     logreg_proba_test = logreg.predict_proba(X_test)[:, 1]
     m05 = evaluate_at_threshold(y_test, logreg_proba_test, threshold=0.5)
@@ -246,11 +224,9 @@ def task5_threshold_sweep(y_test, proba_test, recall_default: float, precision_d
     gate_gap = chosen_gap_pp >= min_gap_pp
     precision_drop_pp = (chosen_row["precision"] - precision_default) * 100
 
-    # Full CSV (41 rows)
     csv_path = config.REPORTS_DIR / "03_threshold_sweep_logreg.csv"
     sweep_df.to_csv(csv_path, index=False)
 
-    # Plot
     fig, ax = plt.subplots(figsize=(7, 4.5))
     ax.plot(sweep_df["threshold"], sweep_df["precision"], label="precision", marker=".")
     ax.plot(sweep_df["threshold"], sweep_df["recall"], label="recall", marker=".")
@@ -266,7 +242,6 @@ def task5_threshold_sweep(y_test, proba_test, recall_default: float, precision_d
     fig.savefig(png_path, dpi=120)
     plt.close(fig)
 
-    # Markdown report
     lines = ["# 03 — Threshold Sweep (Logistic Regression)\n"]
     lines.append(gate_line(
         "Chosen t* recall >= default recall + 15pp", gate_gap,
@@ -336,10 +311,6 @@ def task5_threshold_sweep(y_test, proba_test, recall_default: float, precision_d
     }
 
 
-# ---------------------------------------------------------------------------
-# Task 6 — Random Forest + GridSearchCV
-# ---------------------------------------------------------------------------
-
 def task6_random_forest(X_train, X_test, y_train, y_test) -> dict:
     grid = fit_rf_gridsearch(X_train, y_train)
     best = grid.best_estimator_
@@ -393,10 +364,6 @@ def task6_random_forest(X_train, X_test, y_train, y_test) -> dict:
         "gate_cv": gate_cv, "gate_gap": gate_gap,
     }
 
-
-# ---------------------------------------------------------------------------
-# Task 7 — feature importance
-# ---------------------------------------------------------------------------
 
 def task7_feature_importance(best, X_test, y_test) -> dict:
     raw_imp = raw_impurity_table(best)
@@ -506,10 +473,6 @@ def task7_feature_importance(best, X_test, y_test) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
-# Task 8 — subgroup analysis
-# ---------------------------------------------------------------------------
-
 def _mean_proba_among_positives(X_test, y_test, proba, group_col) -> pd.DataFrame:
     df = X_test.copy()
     df["_y"] = np.asarray(y_test)
@@ -534,7 +497,7 @@ def task8_subgroups(X_test, y_test, rf_proba_test, t_star_rf: float) -> dict:
     lines.append(df_to_md(tbl_pay, float_fmt="{:.4f}"))
     lines.append("")
 
-    # Identify the weakest non-overall subgroup by recall, in each table.
+    # weakest non-overall subgroup by recall, in each table
     cat_body = tbl_cat[tbl_cat["product_category"] != "OVERALL"]
     pay_body = tbl_pay[tbl_pay["payment_method"] != "OVERALL"]
     weak_cat = cat_body.sort_values("recall").iloc[0]
@@ -542,8 +505,7 @@ def task8_subgroups(X_test, y_test, rf_proba_test, t_star_rf: float) -> dict:
     overall_recall_cat = tbl_cat.loc[tbl_cat["product_category"] == "OVERALL", "recall"].iloc[0]
     overall_recall_pay = tbl_pay.loc[tbl_pay["payment_method"] == "OVERALL", "recall"].iloc[0]
 
-    # Grounding diagnostic: mean predicted probability among the actual (y=1) returns in each
-    # group, so the "why it's weak" claim is backed by a real computed number, not a guess.
+    # mean predicted proba among actual returns per group, to back the "why it's weak" claim with a number
     mean_proba_cat = _mean_proba_among_positives(X_test, y_test, rf_proba_test, "product_category")
     mean_proba_pay = _mean_proba_among_positives(X_test, y_test, rf_proba_test, "payment_method")
     weak_cat_mean_proba = mean_proba_cat.loc[
@@ -625,10 +587,6 @@ def task8_subgroups(X_test, y_test, rf_proba_test, t_star_rf: float) -> dict:
     return {"tbl_cat": tbl_cat, "tbl_pay": tbl_pay, "weak_cat": weak_cat, "weak_pay": weak_pay}
 
 
-# ---------------------------------------------------------------------------
-# Task 9 — save artifact + verification
-# ---------------------------------------------------------------------------
-
 def task9_save_artifact(best, X_test, y_test, rf_proba_test, rf_results: dict, t_star_logreg: float) -> dict:
     sweep_rf = sweep_threshold(y_test, rf_proba_test, lo=0.10, hi=0.90, step=0.02)
     f1_idx = sweep_rf["f1"].idxmax()
@@ -659,7 +617,7 @@ def task9_save_artifact(best, X_test, y_test, rf_proba_test, rf_results: dict, t
     }
     config.META_PATH.write_text(json.dumps(meta, indent=2))
 
-    # --- Verification: reload and compare on a fixed sample row ---
+    # reload and compare on a fixed sample row
     sample_row = X_test.iloc[[0]]
     in_memory_proba = float(best.predict_proba(sample_row)[:, 1][0])
 
@@ -717,10 +675,6 @@ def task9_save_artifact(best, X_test, y_test, rf_proba_test, rf_results: dict, t
     }
 
 
-# ---------------------------------------------------------------------------
-# Orchestration
-# ---------------------------------------------------------------------------
-
 def main():
     config.REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     config.MODELS_DIR.mkdir(parents=True, exist_ok=True)
@@ -750,7 +704,7 @@ def main():
     t7 = task7_feature_importance(t6["best"], X_test, y_test)
     print(f"[Task 7] gate_top5={t7['gate_top5']} has_payment_cod={t7['has_payment_cod']}")
 
-    # Compute t*_rf (needed for subgroup analysis) up-front via the SAME sweep_threshold used above.
+    # need t*_rf for subgroups now; reuse the same sweep_threshold call as the artifact step below
     sweep_rf_preview = sweep_threshold(y_test, t6["rf_proba_test"], lo=0.10, hi=0.90, step=0.02)
     t_star_rf_preview = float(sweep_rf_preview.loc[sweep_rf_preview["f1"].idxmax(), "threshold"])
 

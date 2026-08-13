@@ -1,6 +1,4 @@
-"""Entry point: embed every KB chunk with MiniLM, build a FAISS IndexFlatIP, persist it, and
-print/write a similarity calibration table used to justify SIM_THRESHOLD in config.py.
-
+"""Embeds every KB chunk with MiniLM, builds a FAISS IndexFlatIP, and writes a similarity calibration table.
 Run: python -m part3_agent.index_build
 """
 from __future__ import annotations
@@ -24,13 +22,8 @@ OUT_OF_SCOPE_QUERIES = [
 def build_index() -> tuple[faiss.Index, list[dict], SentenceTransformer]:
     docs = load_documents()
     chunks = chunk_documents(docs)
-    # Embed "doc_title. sentence" rather than the bare sentence. Short, single-sentence chunks
-    # (e.g. "Shoes must be unworn...") often lack the query's keywords (e.g. "return window")
-    # even when they are the right chunk; prefixing the parent doc's title gives MiniLM the
-    # topical context to score them correctly. Measured effect on this exact case: cosine rose
-    # from 0.4602 (bare sentence) to 0.6155 (title-prefixed) against the query "What is the
-    # return window for a pair of running shoes?". chunks.json still stores the pure sentence
-    # in "text" (used for display/composition) -- only the embedding input changes.
+    # Embed "doc_title. sentence" not the bare sentence -- short chunks often lack the query's
+    # keywords; the title gives MiniLM topical context (measured cosine 0.46 -> 0.62). "text" keeps the bare sentence.
     texts = [f"{c['doc_title']}. {c['text']}" for c in chunks]
 
     model = SentenceTransformer(config.EMBEDDING_MODEL_NAME)

@@ -1,10 +1,7 @@
-"""Task 3 — frozen ResNet-18 backbone, the assembled model, and one-pass feature caching.
+"""Frozen ResNet-18 backbone, the assembled model, and one-pass feature caching.
 
-Speed trick (see docs/03_PART2_PLAN.md): the backbone is frozen (requires_grad=False, .eval()),
-so its output for a given image is identical on every epoch. We therefore run ONE forward pass
-over each split and cache the resulting 512-d vectors to .npy files. Training the head on those
-cached vectors for 20 epochs is mathematically identical to re-running the frozen forward pass
-each epoch — we are just not recomputing a constant 20 times.
+The backbone is frozen, so its output per image is constant across epochs — we run one
+forward pass per split and cache the 512-d vectors instead of recomputing them every epoch.
 """
 from __future__ import annotations
 
@@ -33,7 +30,7 @@ def freeze_backbone(backbone: nn.Module) -> None:
 
 
 def unfreeze_layer4(backbone: nn.Module) -> None:
-    """Task 4 fine-tune path: unfreeze only layer4, keep everything earlier frozen."""
+    """Fine-tune path: unfreeze only layer4, keep everything earlier frozen."""
     for p in backbone.layer4.parameters():
         p.requires_grad = True
 
@@ -60,10 +57,6 @@ class ProductClassifier(nn.Module):
         feats = self.backbone(x)
         return self.head(feats)
 
-
-# ---------------------------------------------------------------------------
-# Feature caching
-# ---------------------------------------------------------------------------
 
 def _cache_paths(split: str) -> tuple:
     return (

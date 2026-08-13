@@ -1,13 +1,5 @@
-"""Sentence-wise chunking of the KB markdown docs.
-
-The brief names sentence-wise splitting as the production-appropriate strategy over fixed-size
-or overlapping windows for short, hand-authored policy text. A regex split on
-`(?<=[.!?])\\s+` is sufficient and fully deterministic for text we authored ourselves — no NLTK
-dependency needed.
-
-Each doc has a YAML-ish frontmatter block (---\\ndoc_id: ...\\ntitle: ...\\ncategory: ...\\n---)
-followed by the body. We parse the frontmatter with simple line splitting (no external YAML
-library needed for this trivial 3-key format) and split the body into sentences.
+"""Sentence-wise chunking of the KB markdown docs: parse the YAML-ish frontmatter by hand
+(no external YAML lib needed for this 3-key format), then regex-split the body into sentences.
 """
 from __future__ import annotations
 
@@ -51,23 +43,16 @@ def load_documents(documents_dir: Path = config.KB_DOCUMENTS_DIR) -> list[dict]:
 
 
 def split_sentences(text: str) -> list[str]:
-    """Split body text into sentences on `(?<=[.!?])\\s+`, dropping empties.
-
-    Line-wrapped source markdown can embed newlines inside a sentence; collapse all
-    whitespace runs to a single space first so chunk text reads as one clean sentence.
-    """
+    """Split text into sentences on `(?<=[.!?])\\s+`, dropping empties. Whitespace is collapsed
+    first since line-wrapped markdown can embed newlines inside a sentence."""
     normalised = re.sub(r"\s+", " ", text.strip())
     parts = SENTENCE_SPLIT_RE.split(normalised)
     return [p.strip() for p in parts if p.strip()]
 
 
 def chunk_documents(documents: list[dict]) -> list[dict]:
-    """Sentence-wise chunk every document, carrying doc_id/title for traceback.
-
-    Returns a flat list of:
-        {"chunk_id": "POL-01#2", "doc_id": "POL-01", "doc_title": "...",
-         "sentence_index": 2, "text": "..."}
-    """
+    """Sentence-wise chunk every document, carrying doc_id/title for traceback. Returns a flat
+    list of {"chunk_id", "doc_id", "doc_title", "sentence_index", "text"} dicts."""
     chunks = []
     for doc in documents:
         sentences = split_sentences(doc["body"])

@@ -1,11 +1,5 @@
-"""Prompt engineering for Part 3.
-
-Two SEPARATE prompts -- that separation is itself an instance of the SINGLE principle applied
-one level up: INTENT_PROMPT does classification only, RESPONSE_PROMPT does composition only.
-Neither prompt is ever sent over the network in MOCK_LLM mode (config.MOCK_LLM is True by
-default) -- they exist as documented, annotated specifications that mock_llm.py's deterministic
-template logic implements by hand. The optional USE_LIVE_LLM=1 path (not implemented/graded)
-would send RESPONSE_PROMPT.format(...) to a real chat model; MOCK_LLM mode never does.
+"""Prompt engineering for Part 3: INTENT_PROMPT classifies, RESPONSE_PROMPT composes.
+Neither is ever sent over the network in MOCK_LLM mode -- mock_llm.py implements them by hand.
 """
 from __future__ import annotations
 
@@ -44,19 +38,8 @@ Reply with one JSON object and nothing else:             # [SINGLE] one task, on
   "confidence": float}}
 """                                                       # [SHORT] under 120 words, no filler
 
-# Kept for backward-compatible naming with the plan doc; SYSTEM_PROMPT is RESPONSE_PROMPT.
-SYSTEM_PROMPT = RESPONSE_PROMPT
-
-# ---------------------------------------------------------------------------
-# Few-shot intent examples (>=2 required; we ship 3).
-#
-# In MOCK_LLM mode these are NOT text pasted into a live prompt -- graph.py's classify_intent
-# node embeds the user's input with the same MiniLM model used for retrieval, scores it against
-# the embedding of each exemplar's "user" text via cosine similarity, and routes to the winning
-# exemplar's intent. state["matched_fewshot"] records which exemplar won, so every transcript
-# can print e.g.:
-#   [intent] matched few-shot example #2 ("Is order 1523 likely to be returned?") -> intent=return_risk
-# ---------------------------------------------------------------------------
+# Few-shot intent examples (>=2 required, we ship 3). Not pasted into a live prompt in MOCK_LLM
+# mode -- graph.py's classify_intent embeds and cosine-matches the user input against these.
 FEW_SHOT_INTENT = [
     {"user": "What is the return window for a pair of running shoes?",
      "intent": "policy"},

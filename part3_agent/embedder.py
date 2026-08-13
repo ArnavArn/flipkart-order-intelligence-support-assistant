@@ -1,6 +1,5 @@
-"""Single shared MiniLM SentenceTransformer instance -- used by both retriever.py (KB search)
-and graph.py's classify_intent node (few-shot exemplar cosine matching), so the same embedding
-space backs retrieval and intent routing.
+"""Single shared MiniLM SentenceTransformer instance, used by both retriever.py (KB search) and
+graph.py's classify_intent node, so retrieval and intent routing share one embedding space.
 """
 from __future__ import annotations
 

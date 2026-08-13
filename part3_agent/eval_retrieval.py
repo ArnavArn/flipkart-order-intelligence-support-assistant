@@ -1,7 +1,4 @@
-"""Entry point: document-level, deduplicated Precision@3 / Recall@3 over the 6 answer-key
-queries in kb/eval_queries.json, with full per-query arithmetic printed and written to
-transcripts/retrieval_eval.md. Appends the similarity calibration table from index_build.py.
-
+"""Document-level, deduplicated Precision@3 / Recall@3 over the 6 answer-key queries, written to transcripts/retrieval_eval.md.
 Run: python -m part3_agent.eval_retrieval
 """
 from __future__ import annotations
@@ -89,8 +86,7 @@ def main() -> None:
     print(report_md)
     print(f"mean Precision@3 = {mean_p:.3f}, mean Recall@3 = {mean_r:.3f}")
 
-    # Append the similarity calibration table (rebuild in-memory; this is a read-only eval
-    # script -- it does not overwrite the committed FAISS index files).
+    # Rebuilt in-memory since this is a read-only eval script -- never overwrites the committed index files.
     index, chunks, model = build_index()
     calib_md = calibration_table(index, chunks, model)
 

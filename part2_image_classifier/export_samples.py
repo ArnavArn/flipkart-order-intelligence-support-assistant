@@ -1,8 +1,7 @@
-"""Task 8 — ENTRY POINT: python -m part2_image_classifier.export_samples
+"""Entry point: python -m part2_image_classifier.export_samples
 
-Exports the first test-split image found for each of the 10 classes as real PNGs (deterministic,
-no randomness) to data/sample_images/, writes labels.json, then runs predict_image on all 10 and
-records predicted vs true (appended to reports/03_test_evaluation.md).
+Exports one PNG per class to data/sample_images/, writes labels.json, then runs predict_image
+on all 10 and appends predicted-vs-true to reports/03_test_evaluation.md.
 """
 from __future__ import annotations
 
@@ -29,7 +28,7 @@ def export_samples() -> dict:
     labels_json = {}
     for class_idx, slug in enumerate(FILENAME_SLUGS):
         matches = np.where(labels_np == class_idx)[0]
-        test_split_index = int(matches[0])  # first test-split index for this class
+        test_split_index = int(matches[0])
 
         img_array = test_set.data[test_split_index].numpy()  # raw uint8 28x28
         filename = f"{slug}.png"

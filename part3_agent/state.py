@@ -23,7 +23,7 @@ class AgentState(TypedDict, total=False):
     tool_name: str | None
     tool_result: dict | None
 
-    # ── the carried state the multi-turn transcript demonstrates ──
+    # state carried across turns in a multi-turn conversation
     last_order_id: str | None
     last_order_features: dict | None
     last_image_path: str | None

@@ -1,13 +1,7 @@
-"""ENTRY POINT — python -m part2_image_classifier.train
+"""Entry point: python -m part2_image_classifier.train
 
-Pipeline:
-  1. Load Fashion-MNIST, build stratified 55k/5k/10k splits (data.py)          -> report 01
-  2. Freeze ResNet-18 backbone, cache 512-d features for train/val/test       (features.py)
-  3. Train a small head on cached train features, 20 epochs, Adam lr=1e-3    -> report 02
-  4. Decision rule: if val_acc_feature_extraction >= 0.80, stop.
-     Else unfreeze layer4 and fine-tune end-to-end for 2 epochs, lr=1e-4.
-  5. Evaluate once on the untouched 10,000-image test split (evaluate.py)    -> reports 03/04/05
-  6. Save the assembled model to models/product_classifier.pt (model_io checkpoint schema)
+Builds splits, caches frozen-backbone features, trains the head, conditionally fine-tunes
+layer4, evaluates once on the untouched test split, and saves the checkpoint.
 """
 from __future__ import annotations
 
@@ -94,7 +88,7 @@ def write_splits_report(splits: data.Splits) -> None:
 
 
 def train_head(train_feats, train_labels, val_feats, val_labels, device: str):
-    """Task 3 — train ONLY the head on cached features. Returns (head, epoch_log)."""
+    """Train only the head on cached features. Returns (head, epoch_log)."""
     config.seed_everything()
 
     head = features.build_head().to(device)
@@ -140,7 +134,7 @@ def train_head(train_feats, train_labels, val_feats, val_labels, device: str):
 
 
 def finetune_layer4(backbone: nn.Module, head: nn.Module, splits: data.Splits, device: str):
-    """Task 4 — unfreeze layer4 only, retrain end-to-end on real images for 2 epochs."""
+    """Unfreeze layer4 only, retrain end-to-end on real images for 2 epochs."""
     config.seed_everything()
 
     features.unfreeze_layer4(backbone)
@@ -272,11 +266,9 @@ def main():
     device = config.get_device()
     print(f"[train] device={device}")
 
-    # --- Task 1-2: splits ---
     splits = data.load_splits()
     write_splits_report(splits)
 
-    # --- Task 3: frozen backbone, one-pass feature caching ---
     backbone = features.build_backbone()
     features.freeze_backbone(backbone)
 
@@ -290,12 +282,10 @@ def main():
         "test", splits.test, backbone, device, rebuild=args.rebuild_cache
     )
 
-    # --- Task 3: train head on cached features ---
     print("[train] training head on cached features ...")
     head, epoch_log = train_head(train_feats, train_labels, val_feats, val_labels, device)
     val_acc_feature_extraction = epoch_log[-1][2]
 
-    # --- Task 4: conditional fine-tune ---
     finetuned = val_acc_feature_extraction < config.FEATURE_EXTRACTION_ACC_GATE
     finetune_log = []
     val_acc_before = val_acc_feature_extraction
@@ -308,8 +298,8 @@ def main():
         )
         finetune_log = finetune_layer4(backbone, head, splits, device)
         val_acc_after = finetune_log[-1][2]
-        # test cache extracted with the OLD frozen backbone is now stale for evaluation;
-        # evaluate.py will run the full model over raw test images instead.
+        # cached test features are now stale (extracted with the old frozen backbone);
+        # evaluate.py runs the full model over raw test images instead.
     else:
         print(
             f"[train] val_acc_feature_extraction={val_acc_feature_extraction:.4f} >= "
@@ -320,14 +310,12 @@ def main():
         epoch_log, val_acc_feature_extraction, finetuned, finetune_log, val_acc_before, val_acc_after
     )
 
-    # --- assemble final model ---
     model = features.ProductClassifier()
     model.backbone.load_state_dict(backbone.state_dict())
     model.head.load_state_dict(head.state_dict())
     model.to(device)
     model.eval()
 
-    # --- Task 5-6: evaluate ONCE on the untouched test split ---
     print("[train] running final test evaluation (once) ...")
     if finetuned:
         eval_result = evaluate.run_test_evaluation(model, device, test_dataset=splits.test)
@@ -339,7 +327,6 @@ def main():
 
     evaluate.write_evaluation_reports(eval_result)
 
-    # --- Task 7: save the assembled artifact ---
     checkpoint = {
         "arch": "resnet18",
         "input_size": config.INPUT_SIZE,

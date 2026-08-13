@@ -1,15 +1,5 @@
-"""classify_product_image(image_path: str) -> dict
-
-Calls Part 2's documented snippet directly -- never reimplements image loading, the eval
-transform, or the forward pass:
-
-    from part2_image_classifier.model_io import load_model, predict_image
-    model, classes = load_model()
-    result = predict_image(image_path, model=model, classes=classes)
-
-Resolves a bare filename (e.g. "07_sneaker.png") against the real committed PNGs in
-data/sample_images/, so the agent is always pointed at real test-split images, never a
-hardcoded label or an uploaded/raw-IDX substitute.
+"""classify_product_image(image_path) -> dict. Calls Part 2's load_model/predict_image directly
+rather than reimplementing the transform/forward pass; resolves a bare filename against data/sample_images/.
 """
 from __future__ import annotations
 

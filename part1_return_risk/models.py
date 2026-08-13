@@ -1,7 +1,7 @@
-"""Tasks 4/5/6 — dummy baseline, logistic regression, and the Random Forest GridSearchCV.
+"""Dummy baseline, logistic regression, and Random Forest GridSearchCV.
 
-Every estimator that touches raw columns is wrapped in a sklearn Pipeline together with the
-preprocessor from pipeline.py, so `.fit()` on X_train never leaks information from X_test.
+Each estimator is wrapped in a Pipeline with the preprocessor from pipeline.py, so `.fit()`
+on X_train never leaks information from X_test.
 """
 from typing import Tuple
 

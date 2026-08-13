@@ -1,12 +1,5 @@
-"""check_return_risk(order_features: dict) -> dict
-
-Loads Part 1's real saved artifacts:
-    models/return_risk_model.pkl   -- joblib-dumped sklearn Pipeline {"prep", "model"}
-    models/return_risk_meta.json   -- t_star_rf and bucket_cut_points, computed by Part 1
-
-t_star_rf is read from the meta JSON at runtime, on every module import -- it is NEVER a
-literal in this file. A fixed 0.3/0.6 pair of cut points would not be self-calibrating: a
-differently-tuned-but-equally-valid RF could dump every real order into one bucket.
+"""check_return_risk(order_features) -> dict. Loads Part 1's saved model + meta.json;
+t_star_rf is read live from meta.json, never hardcoded, so re-tuning the RF doesn't break the buckets.
 """
 from __future__ import annotations
 
@@ -53,12 +46,8 @@ def _normalise(order_features: dict) -> dict:
 
 
 def check_return_risk(order_features: dict) -> dict:
-    """Score one order's return probability with Part 1's tuned RandomForest pipeline and map
-    it to a Low/Medium/High bucket anchored to t_star_rf, read live from return_risk_meta.json.
-
-    Bucket rule (verbatim from the brief): Low if p < t_star_rf; High if p >= t_star_rf + 0.15;
-    Medium otherwise.
-    """
+    """Score return probability with Part 1's tuned RandomForest pipeline, then bucket it
+    against t_star_rf: Low if p < t_star_rf, High if p >= t_star_rf + 0.15, else Medium."""
     model = _load_model()
     row = pd.DataFrame([_normalise(order_features)])
     p = float(model.predict_proba(row)[0, 1])

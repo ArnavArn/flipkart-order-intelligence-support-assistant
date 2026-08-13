@@ -1,15 +1,5 @@
-"""Task 7 — impurity vs permutation importance.
-
-Provides three views:
-  1. raw_impurity_table   — one row per post-one-hot-encoding column (e.g. cat__payment_method_COD).
-                            This is the table the acceptance gate checks (payment_method one-hot
-                            form must appear in the top 5).
-  2. grouped_impurity_table — one-hot columns summed back to their parent feature (payment_method,
-                            product_category), so it lines up 1:1 with the permutation table, which
-                            operates on raw (pre-transform) columns.
-  3. permutation_table    — permutation_importance on the whole fitted Pipeline, evaluated on the
-                            held-out test split, at the original-column level (n_repeats=10,
-                            random_state=42, scoring="roc_auc").
+"""Impurity vs permutation importance. Impurity is also grouped back to parent feature so it
+lines up 1:1 with permutation importance, which operates on raw pre-transform columns.
 """
 import numpy as np
 import pandas as pd

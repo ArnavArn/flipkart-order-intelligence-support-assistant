@@ -1,8 +1,5 @@
-"""Task 1-2 — download Fashion-MNIST, build the stratified 55k/5k/10k splits.
-
-Pinned source: torchvision.datasets.FashionMNIST(root="data/fashion_mnist", download=True).
-No substitute dataset. The 10,000-image test split returned here is never touched by anything
-except evaluate.py at the very end.
+"""Download Fashion-MNIST, build the stratified 55k/5k/10k splits. Test split is untouched
+until evaluate.py runs at the very end.
 """
 from __future__ import annotations
 
@@ -27,11 +24,7 @@ class Splits:
 
 
 def load_splits() -> Splits:
-    """Download (if needed) and build the stratified 55,000/5,000 train/val split.
-
-    The 10,000-image test set from FashionMNIST(train=False) is returned untouched and is not
-    used for any decision until evaluate.py runs once at the end.
-    """
+    """Download (if needed) and build the stratified 55,000/5,000 train/val split."""
     config.seed_everything()
 
     full_train = FashionMNIST(

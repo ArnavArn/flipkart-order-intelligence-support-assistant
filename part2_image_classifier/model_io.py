@@ -1,13 +1,5 @@
-"""Task 7 — THE documented snippet. Part 3's `classify_product_image` tool imports this file
-and calls exactly these two public functions; it does not re-implement model loading.
-
-    from part2_image_classifier.model_io import load_model, predict_image
-    model, classes = load_model()
-    result = predict_image("data/sample_images/00_tshirt_top.png", model=model, classes=classes)
-
-The eval transform used below is imported from config.py — the SAME object used at training
-time (config.EVAL_TRANSFORM == config.TRAIN_TRANSFORM, no augmentation) — so there is no
-train/inference transform mismatch.
+"""Part 3's `classify_product_image` tool imports load_model/predict_image directly from
+here rather than reimplementing model loading — keep these two signatures stable.
 """
 from __future__ import annotations
 
@@ -19,19 +11,14 @@ from PIL import Image
 from part2_image_classifier import config
 from part2_image_classifier.features import ProductClassifier
 
-# Module-level cache so the agent (Part 3) doesn't reload ~45MB of weights on every tool call.
+# cache so Part 3's agent doesn't reload ~45MB of weights on every tool call
 _CACHED_MODEL = None
 _CACHED_CLASSES = None
 _CACHED_DEVICE = None
 
 
 def load_model(path: Path = config.MODEL_PATH, device: str | None = None):
-    """Rebuild resnet18 + head from the checkpoint config, load weights, .eval(), return (model, classes).
-
-    Returns:
-        model: nn.Module (ProductClassifier: backbone + head), already .eval() and on `device`.
-        classes: list[str] of the 10 class names, in checkpoint/label order.
-    """
+    """Rebuild resnet18 + head from the checkpoint, load weights, .eval(), return (model, classes)."""
     device = device or config.get_device()
     checkpoint = torch.load(path, map_location=device)
 
@@ -53,14 +40,9 @@ def _get_cached_model():
 
 
 def predict_image(image_path: str | Path, model=None, classes=None) -> dict:
-    """Open a PNG with PIL, apply the SAME eval transform used at training time, forward, softmax.
+    """Open a PNG, apply the same eval transform used at training time, forward, softmax.
 
-    Returns:
-        dict with keys:
-          - "label": str, the predicted class name
-          - "confidence": float, softmax probability of the predicted class
-          - "class_index": int, index of the predicted class in `classes`
-          - "top3": dict mapping the top-3 class names to their softmax probabilities
+    Returns a dict with label, confidence, class_index, and top3 (class name -> probability).
     """
     if model is None or classes is None:
         cached_model, cached_classes = _get_cached_model()

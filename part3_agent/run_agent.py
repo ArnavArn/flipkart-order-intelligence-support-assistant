@@ -1,12 +1,5 @@
-"""Interactive / one-shot CLI for the Part 3 support agent.
-
-Usage:
-    python -m part3_agent.run_agent --thread-id conv-A
-    python -m part3_agent.run_agent --thread-id conv-A --message "What is the return window for apparel?"
-
-With no --message, drops into an interactive loop (type "exit" to quit). Every turn on the same
---thread-id shares state (last_order_id, last_order_features, last_image_path); a new
---thread-id starts with none of that state.
+"""CLI for the Part 3 support agent: pass --message for one-shot, otherwise an interactive loop.
+State (last_order_id, last_order_features, last_image_path) is shared across turns on the same --thread-id.
 """
 from __future__ import annotations
 

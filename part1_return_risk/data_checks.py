@@ -1,8 +1,4 @@
-"""Task 2 — dataset verification: row/col counts, return rate, missingness, MAR evidence,
-and breakdown tables by product_category and payment_method.
-
-Every number returned here is computed from the actual loaded DataFrame — nothing is hand-typed.
-"""
+"""Dataset verification: shape, return rate, missingness, MAR evidence, breakdown tables."""
 import pandas as pd
 
 from part1_return_risk.config import DATA_PATH
@@ -33,7 +29,7 @@ def return_rate_by(df: pd.DataFrame, col: str) -> pd.DataFrame:
 def mar_evidence_table(df: pd.DataFrame) -> pd.DataFrame:
     """Missing-rating rate broken down by payment_method — the MAR evidence table."""
     g = df.groupby("payment_method")["rating_given"].agg(
-        n="count",  # non-null count via count(); we need total n and n missing separately below
+        n="count",  # count() is non-null only; total n and n_missing are computed separately below
     )
     total = df.groupby("payment_method").size().rename("n")
     n_missing = df.groupby("payment_method")["rating_given"].apply(lambda s: s.isna().sum()).rename("n_missing_rating")

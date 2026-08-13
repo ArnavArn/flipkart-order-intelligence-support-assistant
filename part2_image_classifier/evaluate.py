@@ -1,7 +1,5 @@
-"""Task 5-6 — evaluate ONCE on the untouched 10,000-image test split.
-
-Writes reports/03_test_evaluation.md, reports/04_confusion_matrix.md,
-reports/05_confusion_analysis.md, and reports/confusion_matrix.csv.
+"""Evaluate once on the untouched 10,000-image test split; writes reports 03-05 plus
+confusion_matrix.csv.
 """
 from __future__ import annotations
 
@@ -12,10 +10,8 @@ from torch.utils.data import DataLoader
 
 from part2_image_classifier import config
 
-# Hand-written visual-similarity explanations for the pairs the brief expects to dominate on
-# Fashion-MNIST. Keyed by an unordered pair of class names. Used ONLY if that pair actually
-# shows up among the top off-diagonal cells of the REAL confusion matrix computed below — we do
-# not force these into the report if the real matrix doesn't back them up.
+# Hand-written visual-similarity explanations, keyed by unordered class-name pair. Only used
+# if that pair actually shows up among the top off-diagonal cells of the real confusion matrix.
 KNOWN_PAIR_EXPLANATIONS = {
     frozenset({"Shirt", "T-shirt/top"}): (
         "Shirt and T-shirt/top are both short-sleeved torso garments with the same rectangular "
@@ -69,13 +65,8 @@ def _generic_pair_explanation(class_a: str, class_b: str) -> str:
 def run_test_evaluation(model, device: str, test_dataset,
                          cached_feats: np.ndarray | None = None,
                          cached_labels: np.ndarray | None = None) -> dict:
-    """Evaluate `model` once on the test split.
-
-    If `cached_feats`/`cached_labels` are given (frozen-backbone path), we only need to run the
-    trained head over the already-cached 512-d vectors — this is exact because the backbone
-    that produced those vectors is identical to `model.backbone` in that path.
-    If not given (fine-tuned path, backbone changed), we run the full model over raw test
-    images since the cache is stale.
+    """Evaluate `model` once on the test split. If cached feats/labels are given (frozen-backbone
+    path) run just the head over them; otherwise (fine-tuned path) run the full model on raw images.
     """
     model.eval()
 

@@ -1,20 +1,5 @@
-"""The LangGraph -- 6 nodes, 2 conditional edges.
-
-    START -> guard_input
-    guard_input   --conditional--> "blocked" -> generate           (skips retrieval and tools)
-                                    "clean"   -> classify_intent
-    classify_intent --conditional--> "policy"/"unknown"           -> retrieve
-                                      "return_risk"/"product_category" -> call_tool
-    retrieve  -> generate
-    call_tool -> generate
-    generate  -> verify_output
-    verify_output -> END
-
-A blocked injection never touches FAISS or a model; a risk/image question never runs retrieval.
-Compiled with a MemorySaver checkpointer keyed by thread_id -- state (last_order_id,
-last_order_features, last_image_path, history) persists across turns on the SAME thread_id and
-starts empty on a new one. That is state, not memory: scoped to one conversation, not shared
-across conversations.
+"""LangGraph pipeline: guard_input -> classify_intent -> retrieve/call_tool -> generate -> verify_output.
+State (order id, features, image path, history) persists per thread_id via MemorySaver; a new thread starts empty.
 """
 from __future__ import annotations
 
@@ -34,9 +19,7 @@ from part3_agent.state import AgentState
 from part3_agent.tools.image_tool import classify_product_image
 from part3_agent.tools.return_risk_tool import check_return_risk
 
-# ---------------------------------------------------------------------------
-# Few-shot exemplar embeddings, computed once at import time.
-# ---------------------------------------------------------------------------
+# few-shot exemplar embeddings, computed once at import time
 _FEWSHOT_EMBEDDINGS = None
 
 
@@ -51,13 +34,7 @@ def _fewshot_embeddings() -> np.ndarray:
     return _FEWSHOT_EMBEDDINGS
 
 
-# ---------------------------------------------------------------------------
-# Demo-scoped pattern extractors. These parse the crafted, structured natural-language
-# sentences used in this project's own transcripts (e.g. "order 1523 ... Rs. 1,899 Apparel
-# ... COD ... 12 days tenure ... 3 previous orders ... 1 previous return ... 340 km ... 6
-# delivery days"). They are intentionally simple regex extractors for a bounded demo, not a
-# general-purpose NLU system.
-# ---------------------------------------------------------------------------
+# Regex extractors tuned to this project's own crafted transcript sentences, not a general NLU system.
 CATEGORY_WORDS = ["Apparel", "Electronics", "Home", "Footwear", "Beauty"]
 
 COREF_PATTERNS = [r"\bits\b", r"\bit\b", r"\bthat order\b", r"\bthis order\b", r"\bthe order\b"]
@@ -72,20 +49,8 @@ def _detect_coref(text: str) -> bool:
     return any(re.search(p, text, re.IGNORECASE) for p in COREF_PATTERNS)
 
 
-# ---------------------------------------------------------------------------
-# Intent routing: cosine similarity against FEW_SHOT_INTENT is ALWAYS computed and is what
-# every transcript prints as "matched few-shot example #N". With only one exemplar per
-# intent, MiniLM cosine alone can be fooled by superficial lexical overlap (e.g. a plain
-# "delivery timeline" question can score closer to the return_risk exemplar "Is order 1523
-# likely to be returned?" than to the policy exemplar, purely because both are short
-# order-shaped questions). The plan explicitly anticipates this: "the router scores ... via
-# embedding cosine ... plus the pattern rules". A deterministic pattern rule fires ONLY for a
-# narrow, explainable signal (an explicit order id + payment/return-risk phrasing for
-# return_risk; a .png filename or explicit "classify the image" phrasing for
-# product_category; a policy-domain keyword otherwise) and overrides the raw cosine winner
-# when they disagree -- and every override is printed in matched_fewshot, so the mechanism
-# stays auditable rather than silently overriding the few-shot signal.
-# ---------------------------------------------------------------------------
+# Cosine to a single exemplar per intent can be fooled by superficial overlap, so a narrow
+# pattern rule overrides it on explainable signals (order id, filename, policy keyword); overrides get logged in matched_fewshot.
 UNKNOWN_COS_THRESHOLD = 0.20  # below this, no exemplar meaningfully matches -> intent="unknown"
 
 POLICY_KEYWORDS = [
@@ -118,8 +83,7 @@ def _has_policy_keyword(text: str) -> bool:
 def _parse_order_features(text: str) -> dict:
     features: dict = {}
 
-    # \b before Rs/INR prevents matching "rs" inside an unrelated word like "orders,"; the
-    # capture group is required to START with a digit so a stray comma alone can never match.
+    # \b avoids matching "rs" inside "orders,"; the capture group must start with a digit.
     m = re.search(r"(?:\bRs\.?|₹|\bINR)\s*(\d[\d,]*)", text, re.IGNORECASE)
     if m:
         features["price_inr"] = float(m.group(1).replace(",", ""))
@@ -170,9 +134,7 @@ def _extract_image_filename(text: str) -> str | None:
     return m.group(1) if m else None
 
 
-# ---------------------------------------------------------------------------
-# Nodes
-# ---------------------------------------------------------------------------
+# nodes
 def guard_input(state: AgentState) -> dict:
     blocked, pattern = check_input(state["user_input"])
     return {"injection_blocked": blocked, "injection_pattern": pattern}
@@ -216,10 +178,8 @@ def classify_intent(state: AgentState) -> dict:
     if override_reason:
         matched_fewshot += f' [overridden -> intent={intent}; reason: {override_reason}]'
 
-    # coref_resolved / coref_unresolved are ALWAYS set explicitly (never omitted) even when
-    # False -- LangGraph's checkpointer only overwrites a channel when a node's return dict
-    # includes that key, so omitting it on a turn with no pronoun would let a stale True from
-    # an earlier turn silently keep short-circuiting verify_output/mock_llm on unrelated turns.
+    # Always set both explicitly, even False -- the checkpointer only overwrites a channel
+    # when the key is present, so omitting it could leak a stale True from an earlier turn.
     update: dict = {
         "intent": intent,
         "matched_fewshot": matched_fewshot,
@@ -232,16 +192,13 @@ def classify_intent(state: AgentState) -> dict:
         update["last_order_id"] = order_id
     elif _detect_coref(text):
         if state.get("last_order_id"):
-            # Coreference resolution: "its"/"that order" refers to the order carried in state
-            # from an earlier turn on this SAME thread_id. We keep the existing last_order_id
-            # (already persisted by the checkpointer) rather than overwriting it with None.
+            # "its"/"that order" resolves to the order carried in state from an earlier turn.
             update["coref_resolved"] = True
             update["matched_fewshot"] += (
                 f' [coref: "its"/"that order" resolved to last_order_id={state["last_order_id"]}]'
             )
         else:
-            # Fresh thread / no earlier order in THIS conversation's state -- the pronoun has
-            # nothing to resolve to. mock_llm.compose short-circuits on this flag.
+            # No earlier order in this thread's state, so the pronoun has nothing to resolve to.
             update["coref_unresolved"] = True
             update["matched_fewshot"] += (
                 ' [coref: pronoun detected but no last_order_id in state -- unresolved]'
@@ -265,9 +222,7 @@ def call_tool(state: AgentState) -> dict:
         try:
             parsed = _parse_order_features(text)
         except ValueError:
-            # Free-text extraction from an untrusted user message is best-effort -- a single
-            # unparseable field must never crash the turn. Any field it would have found stays
-            # missing (NaN), which the saved pipeline's own imputer already handles.
+            # Best-effort extraction; a bad field shouldn't crash the turn (imputer handles the gap).
             parsed = {}
         features = {**(state.get("last_order_features") or {}), **parsed} if parsed else (
             state.get("last_order_features") or {}
@@ -310,15 +265,12 @@ def verify_output(state: AgentState) -> dict:
     final = dict(state.get("final") or {})
 
     if state.get("injection_blocked") or state.get("coref_unresolved"):
-        # Blocked answers and the "no order referenced earlier" answer are not KB claims --
-        # the groundedness check (which is about trusting a retrieved policy chunk) does not
-        # apply to either.
+        # Neither is a KB claim, so the groundedness check doesn't apply.
         return {"final": final, "grounded": True}
 
     source = final.get("source")
     if source != "policy_kb":
-        # Tool-sourced answers (return_risk_tool / image_classifier_tool) are grounded by
-        # construction -- a real model produced them, so the groundedness check does not apply.
+        # Tool-sourced answers are grounded by construction; check only applies to policy_kb.
         return {"final": final, "grounded": True}
 
     top_score = state.get("top_score", 0.0)
@@ -332,9 +284,7 @@ def verify_output(state: AgentState) -> dict:
     return {"final": final, "grounded": grounded, "groundedness_msg": msg}
 
 
-# ---------------------------------------------------------------------------
-# Conditional edges
-# ---------------------------------------------------------------------------
+# conditional edges
 def route_after_guard(state: AgentState) -> str:
     return "blocked" if state.get("injection_blocked") else "clean"
 
@@ -346,9 +296,7 @@ def route_after_intent(state: AgentState) -> str:
     return "retrieve"  # "policy" and "unknown" both retrieve
 
 
-# ---------------------------------------------------------------------------
-# Graph assembly
-# ---------------------------------------------------------------------------
+# graph assembly
 def build_graph():
     builder = StateGraph(AgentState)
     builder.add_node("guard_input", guard_input)
@@ -374,10 +322,8 @@ def build_graph():
 
 
 def invoke_with_trace(graph, user_input: str, thread_id: str) -> tuple[dict, list[str]]:
-    """Run one turn, returning (final_state, node_path) where node_path is the ACTUAL sequence
-    of node names LangGraph executed for this turn (via graph.stream(..., stream_mode="updates")),
-    not a value derived after the fact.
-    """
+    """Run one turn; node_path is the actual sequence of nodes LangGraph executed
+    (from graph.stream stream_mode="updates"), not derived after the fact."""
     cfg = {"configurable": {"thread_id": thread_id}}
     path: list[str] = []
     for update in graph.stream({"user_input": user_input}, config=cfg, stream_mode="updates"):

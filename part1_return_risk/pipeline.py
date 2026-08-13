@@ -1,9 +1,5 @@
-"""Task 3 — build the leak-free preprocessing ColumnTransformer.
-
-The preprocessor is only ever used as a step inside a Pipeline that also holds the estimator.
-`.fit()` (via GridSearchCV or plain Pipeline.fit) must be called on X_train only — never call
-`fit_transform` on the full frame before splitting. GridSearchCV then refits the preprocessing
-inside each CV fold automatically, which is the correct, leak-free pattern.
+"""Leak-free preprocessing ColumnTransformer. Only ever used as a Pipeline step so it gets
+refit on X_train (or each CV fold) — never fit_transform the full frame before splitting.
 """
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer

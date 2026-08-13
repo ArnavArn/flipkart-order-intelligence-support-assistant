@@ -1,9 +1,5 @@
-"""Deterministic template composer -- MOCK_LLM mode. Zero network calls, zero API keys.
-
-compose(state) implements, by hand, what RESPONSE_PROMPT (prompts.py) would ask a live chat
-model to do: read the context (retrieved chunks or a tool's structured result) and emit exactly
-one {"answer", "source", "confidence"} JSON object. Every branch below is a plain string
-template plus arithmetic -- there is nothing here that talks to a network.
+"""Deterministic template composer for MOCK_LLM mode -- zero network calls, zero API keys.
+compose(state) hand-implements what RESPONSE_PROMPT would ask a live model to do: read context, emit one JSON answer.
 """
 from __future__ import annotations
 
@@ -23,11 +19,8 @@ NO_ORDER_REFERENCED_ANSWER = "There is no order referenced earlier in this conve
 
 
 def _risk_confidence(p: float, t_star: float) -> float:
-    """Deterministic, documented confidence function for return_risk answers: how far `p` sits
-    from the Low/Medium boundary (t_star), normalised by the largest possible distance to
-    either side of that boundary (max(t_star, 1 - t_star)). A p right at the boundary yields
-    confidence 0; a p at the extreme (0 or 1) yields confidence close to 1.
-    """
+    """Confidence = how far `p` sits from the Low/Medium boundary (t_star), normalised by the
+    largest possible distance to either side of it. 0 at the boundary, ~1 at the extremes."""
     span = max(t_star, 1 - t_star, 1e-6)
     dist = abs(p - t_star)
     return round(min(1.0, dist / span), 4)
@@ -46,8 +39,7 @@ def _compose_policy(state: dict) -> dict:
         sentences = [c["text"] for c in retrieved[:2]]
         answer = "Based on Flipkart's policy documents: " + " ".join(sentences)
         if state.get("coref_resolved") and state.get("last_order_id"):
-            # The user's pronoun ("its"/"that order") was resolved to an order carried in
-            # THIS thread's state -- make that resolution explicit in the answer text.
+            # Pronoun resolved to an order carried in this thread's state -- make it explicit.
             answer = f"For order {state['last_order_id']}: " + answer
     return {"answer": answer, "source": "policy_kb", "confidence": round(float(top_score), 3)}
 
@@ -92,8 +84,7 @@ def compose(state: dict) -> dict:
         return _compose_blocked(state)
 
     if state.get("coref_unresolved"):
-        # A pronoun ("its"/"that order") was used but this thread's state has no last_order_id
-        # -- there is nothing to resolve it to, so we say so directly instead of guessing.
+        # Pronoun used but no last_order_id in state to resolve it to -- say so directly.
         return _compose_coref_unresolved(state)
 
     intent = state.get("intent", "unknown")
@@ -101,6 +92,5 @@ def compose(state: dict) -> dict:
         return _compose_return_risk(state)
     if intent == "product_category":
         return _compose_product_category(state)
-    # "policy" and "unknown" both go through retrieval and share the same composition template;
-    # verify_output is what may later overwrite this with an ungrounded refusal.
+    # "policy" and "unknown" share this template; verify_output may overwrite it with a refusal.
     return _compose_policy(state)

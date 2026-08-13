@@ -19,10 +19,7 @@ _COMPILED = [re.compile(p, re.IGNORECASE) for p in INJECTION_PATTERNS]
 
 
 def check_input(text: str) -> tuple[bool, str | None]:
-    """Case-insensitive scan of the raw input against INJECTION_PATTERNS.
-
-    -> (blocked, matched_pattern)
-    """
+    """Case-insensitive scan against INJECTION_PATTERNS -> (blocked, matched_pattern)."""
     for pattern, compiled in zip(INJECTION_PATTERNS, _COMPILED):
         if compiled.search(text):
             return True, pattern

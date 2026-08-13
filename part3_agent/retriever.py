@@ -28,10 +28,8 @@ def _load():
 
 
 def search(query: str, k: int = config.TOP_K) -> list[dict]:
-    """Return top-k chunks for `query`, sorted by cosine score descending.
-
-    -> [{chunk_id, doc_id, doc_title, text, score}]
-    """
+    """Return top-k chunks for `query`, sorted by cosine score descending
+    -> [{chunk_id, doc_id, doc_title, text, score}]."""
     index, chunks, model = _load()
     q_emb = model.encode([query], normalize_embeddings=True)
     q_emb = np.asarray(q_emb, dtype="float32")
