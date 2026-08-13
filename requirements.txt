@@ -1,0 +1,21 @@
+# Flipkart Order Intelligence & Support Assistant
+# Python 3.12 (torch/faiss have no 3.14 wheels — use /opt/homebrew/bin/python3.12)
+# All packages are free, local, and require no account or API key.
+
+# ── Part 1: classical ML ──
+numpy>=1.26,<3
+pandas>=2.2
+scikit-learn>=1.5
+joblib>=1.4
+matplotlib>=3.8
+
+# ── Part 2: deep learning / transfer learning ──
+torch>=2.4
+torchvision>=0.19
+pillow>=10.3
+
+# ── Part 3: RAG + agent ──
+sentence-transformers>=3.0
+faiss-cpu>=1.8
+langgraph>=0.2
+langchain-core>=0.3

@@ -1,0 +1,22 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.ipynb_checkpoints/
+
+# Raw dataset + derived caches — regenerable and large
+data/fashion_mnist/
+part2_image_classifier/cache/
+
+# Class materials, not part of the deliverable
+*.rtf
+
+# NOTE — these must stay COMMITTED, never add them here:
+#   models/                 (return_risk_model.pkl, return_risk_meta.json, product_classifier.pt)
+#   data/sample_images/     (10 real test-split PNGs)
+#   orders_dataset.csv
+#   part3_agent/index/      (FAISS index so graders can run without rebuilding)
+#   transcripts/
+#   part1_return_risk/reports/  part2_image_classifier/reports/
