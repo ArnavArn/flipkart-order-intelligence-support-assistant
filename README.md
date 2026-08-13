@@ -293,8 +293,6 @@ part3_agent/tools/                              check_return_risk, classify_prod
 part3_agent/graph.py                            the LangGraph (6 nodes, 2 conditional edges)
 part3_agent/{guardrails,prompts,mock_llm}.py    guardrails, 4S prompt, deterministic composer
 transcripts/                                    9 required transcripts + retrieval_eval.md
-
-docs/                                           build-planning documents (not graded, kept for traceability)
 ```
 
 ---

@@ -20,3 +20,5 @@ part2_image_classifier/cache/
 #   part3_agent/index/      (FAISS index so graders can run without rebuilding)
 #   transcripts/
 #   part1_return_risk/reports/  part2_image_classifier/reports/
+docs/
+PLAN.md
