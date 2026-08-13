@@ -118,7 +118,9 @@ def _has_policy_keyword(text: str) -> bool:
 def _parse_order_features(text: str) -> dict:
     features: dict = {}
 
-    m = re.search(r"(?:Rs\.?|₹|INR)\s*([\d,]+)", text, re.IGNORECASE)
+    # \b before Rs/INR prevents matching "rs" inside an unrelated word like "orders,"; the
+    # capture group is required to START with a digit so a stray comma alone can never match.
+    m = re.search(r"(?:\bRs\.?|₹|\bINR)\s*(\d[\d,]*)", text, re.IGNORECASE)
     if m:
         features["price_inr"] = float(m.group(1).replace(",", ""))
 
@@ -260,7 +262,13 @@ def call_tool(state: AgentState) -> dict:
 
     if intent == "return_risk":
         order_id = _detect_order_id(text) or state.get("last_order_id")
-        parsed = _parse_order_features(text)
+        try:
+            parsed = _parse_order_features(text)
+        except ValueError:
+            # Free-text extraction from an untrusted user message is best-effort -- a single
+            # unparseable field must never crash the turn. Any field it would have found stays
+            # missing (NaN), which the saved pipeline's own imputer already handles.
+            parsed = {}
         features = {**(state.get("last_order_features") or {}), **parsed} if parsed else (
             state.get("last_order_features") or {}
         )
