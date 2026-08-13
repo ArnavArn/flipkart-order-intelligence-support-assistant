@@ -1,0 +1,52 @@
+{
+  "00_tshirt_top.png": {
+    "true_label": "T-shirt/top",
+    "class_index": 0,
+    "test_split_index": 19
+  },
+  "01_trouser.png": {
+    "true_label": "Trouser",
+    "class_index": 1,
+    "test_split_index": 2
+  },
+  "02_pullover.png": {
+    "true_label": "Pullover",
+    "class_index": 2,
+    "test_split_index": 1
+  },
+  "03_dress.png": {
+    "true_label": "Dress",
+    "class_index": 3,
+    "test_split_index": 13
+  },
+  "04_coat.png": {
+    "true_label": "Coat",
+    "class_index": 4,
+    "test_split_index": 6
+  },
+  "05_sandal.png": {
+    "true_label": "Sandal",
+    "class_index": 5,
+    "test_split_index": 8
+  },
+  "06_shirt.png": {
+    "true_label": "Shirt",
+    "class_index": 6,
+    "test_split_index": 4
+  },
+  "07_sneaker.png": {
+    "true_label": "Sneaker",
+    "class_index": 7,
+    "test_split_index": 9
+  },
+  "08_bag.png": {
+    "true_label": "Bag",
+    "class_index": 8,
+    "test_split_index": 18
+  },
+  "09_ankle_boot.png": {
+    "true_label": "Ankle boot",
+    "class_index": 9,
+    "test_split_index": 0
+  }
+}
